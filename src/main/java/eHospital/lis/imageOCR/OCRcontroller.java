@@ -30,7 +30,14 @@ public class OCRcontroller {
             payload = new ByteArrayInputStream("Image File is Required".getBytes());
             return ResponseEntity.badRequest().body(new InputStreamResource(payload));
         }
+
         try {
+            // Check if the file is an image
+            if (!isImageFile(image)) {
+                payload = new ByteArrayInputStream("Invalid Image File".getBytes());
+                return ResponseEntity.badRequest().body(new InputStreamResource(payload));
+            }
+
             byte[] imageBytes = image.getBytes();
             String extractedtext = imageToText(imageBytes);
             extractedtext = textToJson(extractedtext);
@@ -42,14 +49,18 @@ public class OCRcontroller {
             headers.setContentDispositionFormData("attachment", "report.json");
 
             return ResponseEntity.ok().headers(headers).body(new InputStreamResource(payload));
-
         } catch (IOException e) {
             e.printStackTrace();
             payload = new ByteArrayInputStream("Error processing image file.".getBytes());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InputStreamResource(payload));
         }
-
     }
+
+    private boolean isImageFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && contentType.startsWith("image");
+    }
+
 
 
     @PostMapping("/image-to-text")

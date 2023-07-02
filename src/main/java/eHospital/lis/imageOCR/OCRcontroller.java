@@ -95,7 +95,7 @@ public class OCRcontroller {
         tesseract.setVariable("user_defined_dpi", "300");
         tesseract.setLanguage("eng");
         tesseract.setPageSegMode(1);
-        tesseract.setDatapath(String.format("D:/tessdata/tessdata_%s/", tesseractModel));
+        tesseract.setDatapath(String.format("./tessdata/tessdata_%s/", tesseractModel));
         if (tesseractModel.equals("combined"))
             tesseract.setOcrEngineMode(2);
         else
